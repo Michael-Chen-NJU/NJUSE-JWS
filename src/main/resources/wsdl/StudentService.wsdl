@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:tns="http://example.com/student"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             targetNamespace="http://example.com/student"
+             name="StudentService">
+
+    <types>
+        <xsd:schema targetNamespace="http://example.com/student">
+            <!-- 定义学生签到请求元素，包含学生邮箱 -->
+            <xsd:element name="AttendanceRequest">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="studentEmail" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <!-- 定义学生签到响应元素，包含签到结果消息和状态 -->
+            <xsd:element name="AttendanceResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="message" type="xsd:string"/>
+                        <xsd:element name="status" type="xsd:boolean"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <!-- 新增：定义学生信息记录请求元素，加入学生email属性 -->
+            <xsd:element name="StudentInfoRecordRequest">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="studentName" type="xsd:string"/>
+                        <xsd:element name="studentGender" type="xsd:string"/>
+                        <xsd:element name="studentId" type="xsd:string"/>
+                        <xsd:element name="birthDate" type="xsd:string"/>
+                        <xsd:element name="department" type="xsd:string"/>
+                        <xsd:element name="grade" type="xsd:string"/>
+                        <xsd:element name="studentEmail" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <!-- 新增：定义学生信息记录响应元素 -->
+            <xsd:element name="StudentInfoRecordResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="recordMessage" type="xsd:string"/>
+                        <xsd:element name="recordStatus" type="xsd:boolean"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <!-- 新增：定义学生信息查询请求元素，可根据学号等关键信息查询，此处也可考虑是否加入email作为查询条件等 -->
+            <xsd:element name="StudentInfoQueryRequest">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="queryKey" type="xsd:string"/>
+                        <!-- 这里假设queryKey可以是学号等用于查询的关键信息，也可拓展加入email等 -->
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <!-- 新增：定义学生信息查询响应元素，包含查询到的学生信息及查询结果状态，加入学生email属性 -->
+            <xsd:element name="StudentInfoQueryResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="studentName" type="xsd:string"/>
+                        <xsd:element name="studentGender" type="xsd:string"/>
+                        <xsd:element name="studentId" type="xsd:string"/>
+                        <xsd:element name="birthDate" type="xsd:string"/>
+                        <xsd:element name="department" type="xsd:string"/>
+                        <xsd:element name="grade" type="xsd:string"/>
+                        <xsd:element name="studentEmail" type="xsd:string"/>
+                        <xsd:element name="queryStatus" type="xsd:boolean"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:schema>
+    </types>
+
+    <message name="AttendanceRequest">
+        <part name="parameters" element="tns:AttendanceRequest"/>
+    </message>
+    <message name="AttendanceResponse">
+        <part name="parameters" element="tns:AttendanceResponse"/>
+    </message>
+
+    <!-- 新增：学生信息记录请求消息 -->
+    <message name="StudentInfoRecordRequest">
+        <part name="parameters" element="tns:StudentInfoRecordRequest"/>
+    </message>
+    <!-- 新增：学生信息记录响应消息 -->
+    <message name="StudentInfoRecordResponse">
+        <part name="parameters" element="tns:StudentInfoRecordResponse"/>
+    </message>
+    <!-- 新增：学生信息查询请求消息 -->
+    <message name="StudentInfoQueryRequest">
+        <part name="parameters" element="tns:StudentInfoQueryRequest"/>
+    </message>
+    <!-- 新增：学生信息查询响应消息 -->
+    <message name="StudentInfoQueryResponse">
+        <part name="parameters" element="tns:StudentInfoQueryResponse"/>
+    </message>
+
+    <portType name="StudentServicePortType">
+        <operation name="studentAttendance">
+            <input message="tns:AttendanceRequest"/>
+            <output message="tns:AttendanceResponse"/>
+        </operation>
+        <!-- 新增：学生信息记录操作 -->
+        <operation name="recordStudentInfo">
+            <input message="tns:StudentInfoRecordRequest"/>
+            <output message="tns:StudentInfoRecordResponse"/>
+        </operation>
+        <!-- 新增：学生信息查询操作 -->
+        <operation name="queryStudentInfo">
+            <input message="tns:StudentInfoQueryRequest"/>
+            <output message="tns:StudentInfoQueryResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="StudentServiceBinding" type="tns:StudentServicePortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <operation name="studentAttendance">
+            <soap:operation soapAction="http://example.com/student/studentAttendance"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <!-- 新增：学生信息记录操作的绑定 -->
+        <operation name="recordStudentInfo">
+            <soap:operation soapAction="http://example.com/student/recordStudentInfo"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <!-- 新增：学生信息查询操作的绑定 -->
+        <operation name="queryStudentInfo">
+            <soap:operation soapAction="http://example.com/student/queryStudentInfo"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+
+    <service name="StudentService">
+        <port name="StudentServicePort" binding="tns:StudentServiceBinding">
+            <soap:address location="http://127.0.0.1:8081/student-service"/>
+        </port>
+    </service>
+
+</definitions>
